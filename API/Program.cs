@@ -1,18 +1,21 @@
 using API.Data;
+using API.Extensions;
+using API.Interfaces;
+using API.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using System.Security.Cryptography.X509Certificates;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
 builder.Services.AddControllers();
-builder.Services.AddDbContext<DataContext>(opt =>
-{
-    opt.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection"));
-});
+builder.Services.AddApplicationServices(builder.Configuration);
+builder.Services.AddIdentityServices(builder.Configuration);
 
-builder.Services.AddCors();
 
 // Configure Kestrel to use the backend.pfx certificate
 builder.WebHost.ConfigureKestrel(serverOptions =>
@@ -44,7 +47,9 @@ app.UseCors(policy =>
           .AllowAnyMethod()
 );
 
-//app.UseAuthorization();
+
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapControllers();
 
