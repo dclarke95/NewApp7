@@ -1,12 +1,6 @@
-using API.Data;
 using API.Extensions;
-using API.Interfaces;
-using API.Services;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
+using API.Middleware;
 using System.Security.Cryptography.X509Certificates;
-using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -36,7 +30,7 @@ builder.WebHost.ConfigureKestrel(serverOptions =>
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-
+app.UseMiddleware<ExceptionMiddleware>();
 // Enable HTTPS redirection
 app.UseHttpsRedirection();
 
